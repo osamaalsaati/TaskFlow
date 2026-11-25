@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f4">
+  <meta name="description" content="لوحة بسيطة لتنظيم المهام ومتابعة تقدمها بالسحب والإفلات.">
+  <title>TaskFlow | لوحة المهام</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="لوحة مهام TaskFlow">
+        <span class="brand-mark" aria-hidden="true">↗</span>
+        <span class="brand-copy"><strong>TaskFlow</strong><small>BY OSAMA</small></span>
+      </a>
+      <div class="topbar-side"><span class="local-badge"><span class="badge-dot"></span> مساحة عمل محلية</span><span id="today" class="today"></span></div>
+    </header>
+
+    <main class="main-content">
+      <section class="page-heading" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow"><span class="eyebrow-line"></span> إدارة العمل اليومي</p>
+          <h1 id="page-title">لوحة المهام<span class="title-dot">.</span></h1>
+          <p class="intro">رتّب أولوياتك، وانقل مهامك بين المراحل بالسحب والإفلات.</p>
+        </div>
+        <button id="add-task" class="button button-primary" type="button"><span class="button-plus" aria-hidden="true">＋</span> مهمة جديدة</button>
+      </section>
+
+      <section class="overview" aria-label="ملخص المهام">
+        <div class="overview-copy"><span class="overview-icon" aria-hidden="true">◈</span><div><strong>نظرة سريعة</strong><small>تقدّمك في لمحة واحدة</small></div></div>
+        <div class="overview-stats"><div><strong id="total-count">0</strong><span>إجمالي المهام</span></div><div><strong id="active-count">0</strong><span>قيد التنفيذ</span></div><div><strong id="done-count">0</strong><span>مكتملة</span></div></div>
+        <div class="overview-progress"><div class="progress-label"><span>نسبة الإنجاز</span><strong id="progress-percent">0%</strong></div><div class="progress-track"><span id="progress-fill"></span></div></div>
+      </section>
+
+      <div class="board-toolbar"><div class="section-heading"><span class="section-marker"></span><h2>مساحة العمل</h2><span id="task-summary" class="task-summary"></span></div><label class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="ابحث عن مهمة..." aria-label="ابحث عن مهمة"></label></div>
+
+      <section class="board" aria-label="لوحة إدارة المهام">
+        <div class="column" data-status="todo">
+          <div class="column-heading"><div class="column-title"><span class="status-icon todo-icon">○</span><div><h3>قائمة المهام</h3><small>To Do</small></div></div><span class="count" data-count="todo">0</span></div>
+          <div class="task-list" data-list="todo" aria-label="مهام لم تبدأ بعد"></div>
+        </div>
+        <div class="column" data-status="progress">
+          <div class="column-heading"><div class="column-title"><span class="status-icon progress-icon">◔</span><div><h3>قيد التنفيذ</h3><small>In Progress</small></div></div><span class="count" data-count="progress">0</span></div>
+          <div class="task-list" data-list="progress" aria-label="مهام قيد التنفيذ"></div>
+        </div>
+        <div class="column" data-status="done">
+          <div class="column-heading"><div class="column-title"><span class="status-icon done-icon">✓</span><div><h3>مكتملة</h3><small>Done</small></div></div><span class="count" data-count="done">0</span></div>
+          <div class="task-list" data-list="done" aria-label="مهام مكتملة"></div>
+        </div>
+      </section>
+      <p class="board-hint"><span aria-hidden="true">↔</span> اسحب البطاقة إلى أي قائمة، أو رتّبها داخل قائمتها. استخدم زر السحب على الهاتف.</p>
+    </main>
+    <footer class="footer"><span>© <span id="year"></span> TaskFlow · Osama</span><span><span class="save-dot"></span> يتم حفظ التغييرات على هذا الجهاز تلقائيًا</span></footer>
+  </div>
+
+  <dialog id="task-dialog" class="task-dialog" aria-labelledby="dialog-title">
+    <form id="task-form" novalidate>
+      <div class="dialog-heading"><div><p class="eyebrow">تفاصيل المهمة</p><h2 id="dialog-title">مهمة جديدة</h2></div><button id="close-dialog" class="icon-button" type="button" aria-label="إغلاق">×</button></div>
+      <label for="task-title">عنوان المهمة <span class="required">*</span></label>
+      <input id="task-title" name="title" type="text" maxlength="120" placeholder="مثال: مراجعة التصميم النهائي" required>
+      <p id="title-error" class="field-error" role="alert"></p>
+      <label for="task-description">الوصف <span class="optional">اختياري</span></label>
+      <textarea id="task-description" name="description" rows="4" maxlength="500" placeholder="أضف تفاصيل تساعدك على إنجاز المهمة..."></textarea>
+      <div class="form-grid"><div><label for="task-priority">الأولوية</label><select id="task-priority" name="priority"><option value="medium">متوسطة</option><option value="high">عالية</option><option value="low">منخفضة</option></select></div><div><label for="task-due">تاريخ الاستحقاق</label><input id="task-due" name="due" type="date"></div></div>
+      <div class="dialog-actions"><button id="cancel-dialog" class="button button-secondary" type="button">إلغاء</button><button id="save-task" class="button button-primary" type="submit">إضافة المهمة</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
